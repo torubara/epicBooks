@@ -2,6 +2,15 @@ ready(function(){
 
   // В этом месте должен быть написан ваш код
 
+const burgerButton = document.querySelector('.burger');
+const mainNav = document.getElementById('nav');
+
+//Открываем/закрываем мобильное меню по клику
+burgerButton.addEventListener('click', function(e){
+  e.preventDefault();
+  burgerButton.classList.toggle('burger--close');
+  mainNav.classList.toggle('main-nav--open');
+});
 
 
   // ВНИМАНИЕ!
