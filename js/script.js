@@ -2,16 +2,23 @@ ready(function(){
 
   // В этом месте должен быть написан ваш код
 
-const burgerButton = document.querySelector('.burger');
-const mainNav = document.getElementById('nav');
+  const burgerButton = document.querySelector('.burger');
+  const mainNav = document.getElementById('nav');
+  const filters = document.getElementById('filters');
+  const filtersButton = document.getElementById('filters-trigger');
 
-//Открываем/закрываем мобильное меню по клику
-burgerButton.addEventListener('click', function(e){
-  e.preventDefault();
-  burgerButton.classList.toggle('burger--close');
-  mainNav.classList.toggle('main-nav--open');
-});
+  //Открываем/закрываем мобильное меню по клику
+  burgerButton.addEventListener('click', function(e){
+    e.preventDefault();
+    burgerButton.classList.toggle('burger--close');
+    mainNav.classList.toggle('main-nav--open');
+  });
 
+  //Открываем/закрываем фильтры по клику
+  filtersButton.addEventListener('click', function(e){
+    e.preventDefault();
+    filters.classList.toggle('filters--open')
+  });
 
   // ВНИМАНИЕ!
   // Нижеследующий код (кастомный селект и выбор диапазона цены) работает
