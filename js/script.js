@@ -6,6 +6,8 @@ ready(function(){
   const mainNav = document.getElementById('nav');
   const filters = document.getElementById('filters');
   const filtersButton = document.getElementById('filters-trigger');
+  const modalBlock = document.getElementById('modal-book-view');
+  const modalCloseButton = document.querySelector('.modal__close')
 
   //Открываем/закрываем мобильное меню по клику
   burgerButton.addEventListener('click', function(e){
@@ -17,8 +19,15 @@ ready(function(){
   //Открываем/закрываем фильтры по клику
   filtersButton.addEventListener('click', function(e){
     e.preventDefault();
-    filters.classList.toggle('filters--open')
+    filters.classList.toggle('filters--open');
   });
+
+  //Закрыть модальное окно
+  modalCloseButton.addEventListener('click', function(e){
+    e.preventDefault();
+    modalBlock.classList.toggle('modal--open');
+  });
+
 
   // ВНИМАНИЕ!
   // Нижеследующий код (кастомный селект и выбор диапазона цены) работает
