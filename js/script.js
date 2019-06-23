@@ -28,30 +28,34 @@ ready(function(){
     modalBlock.classList.toggle('modal--open');
   });
 
+  //Запрос данных
   function fetchBooks() {
     return fetch('https://books.marinintim.com/books').then(r=> r.json())
-      .then(response => {
-        // console.log(response)
-      })
-  }
-  fetchBooks().then(renderCards);
-    const catalogBookList = document.querySelector('.catalog__books-list')
-  function renderCards(books) {
-    books.map(renderCard).forEach(el => { catalogBookList.appendChild(el)})
   }
 
-  const template = document.querySelector('.template-card');
+  //Рендер карточек товаров
+  const templateCard = document.querySelector('.template-card');
   const fragment = document.createDocumentFragment()
 
-  function renderCard(book) {
-    const newBookCard = template.content.cloneNode(true)
-    newBookCard.querySelector('.card__title').textContent = book.name
-    newBookCard.querySelector('.card__price').textContent = book.price
-    newBookCard.querySelector('.card__img').src = '/img/${book.image}'
-
-
-    fragment.appendChild(newBookCard)
+  function renderCard(books) {
+    books.forEach(function(book){
+      const newBookCard = templateCard.content.cloneNode(true)
+      newBookCard.querySelector('.card__title').textContent = book.name
+      newBookCard.querySelector('.card__price').textContent = book.price/100 + ' ₽'
+      newBookCard.querySelector('.card__img')
+      .src = 'https://books.marinintim.com' + book.thumb_url
+      fragment.appendChild(newBookCard)
+    })
   }
+  //Выгрузка карточек товаров на страницу
+  function appendChildFragment(){
+    const catalogBookList = document.querySelector('.catalog__books-list')
+    catalogBookList.appendChild(fragment)
+  }
+
+  //Запрос данных => Рендер карточек товаров => Выгрузка карточек товаров на страницу
+  fetchBooks().then(renderCard).then(appendChildFragment);
+
 
   // ВНИМАНИЕ!
   // Нижеследующий код (кастомный селект и выбор диапазона цены) работает
