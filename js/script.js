@@ -57,6 +57,16 @@ ready(function(){
   fetchBooks().then(renderCard).then(appendChildFragment);
 
 
+  const cardLink = document.querySelector('.card__inner')
+
+  cardLink.addEventListener('click', function(e){
+    e.preventDefault()
+
+  })
+
+  //burgerButton.addEventListener('click', function(e){
+  //e.preventDefault();
+
   // ВНИМАНИЕ!
   // Нижеследующий код (кастомный селект и выбор диапазона цены) работает
   // корректно и не вызывает ошибок в консоли браузера только на главной.
