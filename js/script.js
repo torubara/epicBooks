@@ -2,12 +2,12 @@ ready(function(){
 
   // В этом месте должен быть написан ваш код
 
-  const burgerButton = document.querySelector('.burger');
-  const mainNav = document.getElementById('nav');
-  const filters = document.getElementById('filters');
-  const filtersButton = document.getElementById('filters-trigger');
-  const modalBlock = document.getElementById('modal-book-view');
-  const modalCloseButton = document.querySelector('.modal__close')
+  const burgerButton = document.querySelector('.burger');//кнопка мобильного меню
+  const mainNav = document.getElementById('nav');// блок с меню
+  const filters = document.getElementById('filters');//блок с фильтрами
+  const filtersButton = document.getElementById('filters-trigger');// кнопка открывания/закрывание фильтров
+  const modalBlock = document.getElementById('modal-book-view');// блок с модалкой
+  const modalCloseButton = document.querySelector('.modal__close')// кнопка закрытия модального окна
 
   //Открываем/закрываем мобильное меню по клику
   burgerButton.addEventListener('click', function(e){
@@ -22,11 +22,21 @@ ready(function(){
     filters.classList.toggle('filters--open');
   });
 
-  //Закрыть модальное окно
+  // Закрыть модальное окно
   modalCloseButton.addEventListener('click', function(e){
     e.preventDefault();
     modalBlock.classList.toggle('modal--open');
+    document.querySelector('.js').classList.toggle('js-modal-open')
   });
+
+  //попытка сделать закрытие модального окна по клику на фон за пределами модалки
+  if(document.querySelector('.js').classList.contains('js-modal-open')){
+    modalBlock.addEventListener('click', function(e){
+    e.preventDefault()
+    modalBlock.classList.toggle('modal--open');
+    document.querySelector('.js').classList.toggle('js-modal-open')
+    })
+  }
 
   //Запрос данных
   function fetchBooks() {
@@ -39,33 +49,71 @@ ready(function(){
 
   function renderCard(books) {
     books.forEach(function(book){
-      const newBookCard = templateCard.content.cloneNode(true)
-      newBookCard.querySelector('.card__title').textContent = book.name
-      newBookCard.querySelector('.card__price').textContent = book.price/100 + ' ₽'
-      newBookCard.querySelector('.card__img')
-      .src = 'https://books.marinintim.com' + book.thumb_url
-      fragment.appendChild(newBookCard)
+      if(book.type == typeBook) {//вывод книг по маркетингу т.к. по умолчанию активен этот таб
+        const newBookCard = templateCard.content.cloneNode(true)
+        newBookCard.querySelector('.card__title').textContent = book.name
+        newBookCard.querySelector('.card__price').textContent = book.price/100 + ' ₽'
+        newBookCard.querySelector('.card__img')
+        // .src = 'https://books.marinintim.com' + book.thumb_url
+        // newBookCard.querySelector('.card__img').alt = book.name
+        console.log(book.type)
+        fragment.appendChild(newBookCard)
+      }
     })
   }
+
+  //попытка по клику на таб менять запрос на выведение карточек книг по типу книги
+  let typeBook = 'marketing'
+  function setTypeFilter(){
+    const tabsFilter = document.querySelector('.tabs__item-link')
+    tabsFilter.addEventListener('click', function(e){
+      e.preventDefault()
+      console.log(tabsFilter.textContent)
+    })
+    if (tabsFilter == 'Маркетинг'){
+      typeBook = 'marketing'
+    }
+    else if (tabsFilter == 'Научпоп') {
+      typeBook = 'science'
+    }
+    else if(tabsFilter == 'Бизнес'){
+      typeBook = 'business'
+    }
+    else if(tabsFilter == 'Дизайн'){
+      typeBook = 'creativity'
+    }
+
+  }
+
+
   //Выгрузка карточек товаров на страницу
+  const catalogBooksList = document.querySelector('.catalog__books-list')
+
   function appendChildFragment(){
-    const catalogBookList = document.querySelector('.catalog__books-list')
-    catalogBookList.appendChild(fragment)
+    catalogBooksList.appendChild(fragment)
   }
 
   //Запрос данных => Рендер карточек товаров => Выгрузка карточек товаров на страницу
   fetchBooks().then(renderCard).then(appendChildFragment);
 
+// Отмена дефолтного поведения при клике на карточку товара
+  const cardLink = document.querySelector('.card__inner');
 
-  const cardLink = document.querySelector('.card__inner')
+  const templateModal = document.querySelector('.template-modal')
 
-  cardLink.addEventListener('click', function(e){
-    e.preventDefault()
 
+  //попытка создать модальное окно при клике на карточку книги
+  catalogBooksList.addEventListener('click', function(e){
+    e.preventDefault();
+    const newModal = templateModal.content.cloneNode(true);
+    const pageContent = document.querySelector('.page__content')
+    // newModal.querySelector('.product__title').textContent = document.querySelector('.card__title').textContent
+    // fragment.appendChild(newModal)
+    // pageContent.appendChild(fragment)
+    document.querySelector('.modal').classList.add('modal--open')
+    document.querySelector('.js').classList.add('js-modal-open')
   })
 
-  //burgerButton.addEventListener('click', function(e){
-  //e.preventDefault();
 
   // ВНИМАНИЕ!
   // Нижеследующий код (кастомный селект и выбор диапазона цены) работает
