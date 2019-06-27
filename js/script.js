@@ -7,7 +7,8 @@ ready(function(){
   const filters = document.getElementById('filters');//блок с фильтрами
   const filtersButton = document.getElementById('filters-trigger');// кнопка открывания/закрывание фильтров
   const modalBlock = document.getElementById('modal-book-view');// блок с модалкой
-  const modalCloseButton = document.querySelector('.modal__close')// кнопка закрытия модального окна
+  const modalCloseButton = document.querySelector('.modal__close');// кнопка закрытия модального окна
+  let booksList = null;
 
   //Открываем/закрываем мобильное меню по клику
   burgerButton.addEventListener('click', function(e){
@@ -23,11 +24,19 @@ ready(function(){
   });
 
   // Закрыть модальное окно
-  modalCloseButton.addEventListener('click', function(e){
-    e.preventDefault();
-    modalBlock.classList.toggle('modal--open');
-    document.querySelector('.js').classList.toggle('js-modal-open')
-  });
+  document.addEventListener('click', function(e){
+    if(e.target.classList.contains('modal__close')||e.target.classList.contains('modal--open')){
+      document.getElementById('modal-book-view').classList.remove('modal--open');
+      document.getElementsByTagName('html')[0].classList.remove('js-modal-open')
+    }
+  })
+  // modalCloseButton.addEventListener('click', function(e){
+  //   e.preventDefault();
+  //   modalBlock.classList.toggle('modal--open');
+  //   document.querySelector('.js').classList.toggle('js-modal-open')
+  // });
+
+
 
   //попытка сделать закрытие модального окна по клику на фон за пределами модалки
   if(document.querySelector('.js').classList.contains('js-modal-open')){
@@ -47,54 +56,62 @@ ready(function(){
   const templateCard = document.querySelector('.template-card');
   const fragment = document.createDocumentFragment()
 
-  function renderCard(books) {
+  function renderCard(books, type = 'marketing') {
     books.forEach(function(book){
-      if(book.type == typeBook) {//вывод книг по маркетингу т.к. по умолчанию активен этот таб
+      if(book.type == type) {//вывод книг по маркетингу т.к. по умолчанию активен этот таб
         const newBookCard = templateCard.content.cloneNode(true)
         newBookCard.querySelector('.card__title').textContent = book.name
         newBookCard.querySelector('.card__price').textContent = book.price/100 + ' ₽'
         newBookCard.querySelector('.card__img')
         // .src = 'https://books.marinintim.com' + book.thumb_url
         // newBookCard.querySelector('.card__img').alt = book.name
-        console.log(book.type)
+        // console.log(book.type)
         fragment.appendChild(newBookCard)
       }
     })
   }
 
   //попытка по клику на таб менять запрос на выведение карточек книг по типу книги
-  let typeBook = 'marketing'
-  function setTypeFilter(){
-    const tabsFilter = document.querySelector('.tabs__item-link')
-    tabsFilter.addEventListener('click', function(e){
-      e.preventDefault()
-      console.log(tabsFilter.textContent)
-    })
-    if (tabsFilter == 'Маркетинг'){
-      typeBook = 'marketing'
-    }
-    else if (tabsFilter == 'Научпоп') {
-      typeBook = 'science'
-    }
-    else if(tabsFilter == 'Бизнес'){
-      typeBook = 'business'
-    }
-    else if(tabsFilter == 'Дизайн'){
-      typeBook = 'creativity'
-    }
+  document.querySelector('.page-header__book-tabs').addEventListener('click', function(e){
+    e.preventDefault();
+    console.log(e.target.dataset.type)
+    // fetchBooks().then(function (){renderCard(this,e.target.dataset.type)}).then(appendChildFragment)
+  })
+  // let typeBook = 'marketing'
+  // function setTypeFilter(){
+  //   const tabsFilter = document.querySelector('.tabs__item-link')
+  //   tabsFilter.addEventListener('click', function(e){
+  //     e.preventDefault()
+  //     console.log(tabsFilter.textContent)
+  //   })
+  //   if (tabsFilter == 'Маркетинг'){
+  //     typeBook = 'marketing'
+  //   }
+  //   else if (tabsFilter == 'Научпоп') {
+  //     typeBook = 'science'
+  //   }
+  //   else if(tabsFilter == 'Бизнес'){
+  //     typeBook = 'business'
+  //   }
+  //   else if(tabsFilter == 'Дизайн'){
+  //     typeBook = 'creativity'
+  //   }
 
-  }
+  // }
 
 
   //Выгрузка карточек товаров на страницу
   const catalogBooksList = document.querySelector('.catalog__books-list')
 
   function appendChildFragment(){
-    catalogBooksList.appendChild(fragment)
+    catalogBooksList.innerHTML = '';
+    catalogBooksList.appendChild(fragment);
   }
 
   //Запрос данных => Рендер карточек товаров => Выгрузка карточек товаров на страницу
-  fetchBooks().then(renderCard).then(appendChildFragment);
+  fetchBooks()
+    .then(renderCard)
+    .then(appendChildFragment);
 
 // Отмена дефолтного поведения при клике на карточку товара
   const cardLink = document.querySelector('.card__inner');
@@ -105,8 +122,8 @@ ready(function(){
   //попытка создать модальное окно при клике на карточку книги
   catalogBooksList.addEventListener('click', function(e){
     e.preventDefault();
-    const newModal = templateModal.content.cloneNode(true);
-    const pageContent = document.querySelector('.page__content')
+    // const newModal = templateModal.content.cloneNode(true);
+    // const pageContent = document.querySelector('.page__content')
     // newModal.querySelector('.product__title').textContent = document.querySelector('.card__title').textContent
     // fragment.appendChild(newModal)
     // pageContent.appendChild(fragment)
